@@ -15,7 +15,11 @@ export class UsersService {
         return this.repository.findAll();
     }
 
-    update(id: string, updateUserDto: UpdateUserDto) {
+    updateUserById(id: string, updateUserDto: UpdateUserDto) {
         return this.repository.updateUserById(id, updateUserDto);
+    }
+
+    delete(id: string) {
+        return this.repository.deleteUserById(id);
     }
 }
