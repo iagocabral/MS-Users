@@ -3,10 +3,11 @@ import { CreateUserDto } from "../dtos/create-user.dto";
 import { UpdateUserDto } from "../dtos/update-user.dto";
 import { randomUUID } from "node:crypto";
 import * as bcrypt from 'bcrypt';
+import { PrismaService } from "src/modules/global/prisma/prisma.service";
 
 @Injectable()
 export class UsersRepository {
-    private users: any[] = [];
+    constructor(private readonly prismaService: PrismaService) {}
 
     async create(user: CreateUserDto) {
         const hashedPassword = await bcrypt.hash(user.password, 10);
@@ -16,28 +17,28 @@ export class UsersRepository {
             id: randomUUID(),
             password: hashedPassword
         }
-        this.users.push(formatUser);
+        await this.prismaService.users.create({
+            data: formatUser
+        })
         return formatUser;
     }
 
-    findAll() {
-        return this.users;
+    async findAll() {
+        // return this.users;
+        return await this.prismaService.users.findMany();
     }
 
     async updateUserById(id: string, data: UpdateUserDto){
-        const user = this.users.find(user => user.id === id);
-        for(const key in data){
-            if(key === 'password'){
-                user[key] = await bcrypt.hash(data[key], 10);
-            } else {
-            user[key] = data[key];
-            }
-        }   
+        const user = await this.prismaService.users.update({
+            where: {
+                id,
+            },
+            data,
+        })
         return user;
     }
 
-    deleteUserById(id: string){
-        const index = this.users.findIndex((user) => user.id === id);
-        this.users.splice(index, 1);
+    async deleteUserById(id: string){
+        return await this.prismaService.users.delete({where: {id}});
     }
 }

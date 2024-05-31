@@ -2,28 +2,30 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/commo
 import { UsersService } from "./user.service";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
     @Post()
-    create(@Body() body: CreateUserDto){
+    async create(@Body() body: CreateUserDto){
         return this.usersService.create(body);
     }
 
     @Get()
-    findAll() {
+    async findAll() {
         return this.usersService.findAll();
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() body: UpdateUserDto){
+    async update(@Param('id') id: string, @Body() body: UpdateUserDto){
         return this.usersService.updateUserById(id, body);
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string){
+    async delete(@Param('id') id: string){
         return this.usersService.delete(id);
     }
 }

@@ -9,3 +9,7 @@ D: DELETE
 - repository = criar as funções
 
 - user.repository > user.service > user.controller/
+
+
+cria o modules > users > repositories
+
