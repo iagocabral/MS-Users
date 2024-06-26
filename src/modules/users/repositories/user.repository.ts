@@ -15,7 +15,7 @@ export class UsersRepository {
             email: user.email,
             name: user.name,
             id: randomUUID(),
-            password: hashedPassword
+            password: user.password
         }
         await this.prismaService.users.create({
             data: formatUser
